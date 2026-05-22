@@ -46,7 +46,40 @@ task.spawn(function()
             end)
         end
     end
-end)
+end) 
+-- =============================================================================
+-- CẤU HÌNH HỆ THỐNG BIẾN TOÀN CỤC MỚI (CHỈ SỐ & CONFIG CHI TIẾT)
+-- =============================================================================
+_G.AutoFarmMode = "Normal"
+_G.FarmDistance = 10
+_G.FarmHeightOffset = 10
+_G.FarmTweenSpeed = 300
+_G.StopTweenOnError = true
+_G.StopTweenOnDeath = true
+_G.AttackDelay = 0.1
+_G.FastAttack = true
+_G.FastAttackMultiplier = 2
+_G.BringRadius = 50
+_G.FaceTarget = true
+_G.LockPosition = true
+_G.QuestMode = "Level Detection"
+_G.QuestTeleportDelay = 0.5
+_G.MaxDesyncDistance = 150
+_G.EntranceDelay = 1
+_G.ClicksPerSecond = 15
+_G.HitboxExtender = false
+_G.HitboxSize = 20
+_G.HitboxShape = "Block"
+_G.BossSelection = "All"
+_G.BossFarmDistance = 12
+_G.DungeonType = "Flame"
+_G.StatPriority = "Melee"
+_G.FlySpeed = 50
+_G.WalkSpeed = 16
+_G.JumpPower = 50
+_G.CameraFOV = 70
+_G.Brightness = 2
+_G.RejoinDelay = 5
     local INFO_DOT25_QUAD = TweenInfo.new(.25, Enum.EasingStyle.Quad)
     local HOHO_Passcheck = Instance.new("ScreenGui")
     local INTRO = Instance.new("CanvasGroup")
@@ -119,9 +152,6 @@ local function KichHoatScriptCuaToi()
         LoadingTitle = "Loading Dynamic Script Systems...",
         LoadingSubtitle = "by idontthinkthismatters & Custom",
         ConfigurationSaving = { Enabled = true, FolderName = "MegaHubConfig", FileName = "config" },
-        Discord = { Enabled = false, Invite = "", RememberJoins = true },
-        KeySystem = false
-    })
 
     -- Các biến toàn cục quản lý trạng thái
     _G.AutoFarm = false
@@ -557,7 +587,86 @@ RaidTab:CreateToggle({
         end
     })
     MiscTab:CreateLabel("Nhà Phát Triển: zenscript")
+-- =============================================================================
+-- CÁC TAB CẤU HÌNH CHI TIẾT CHUYÊN SÂU
+-- =============================================================================
 
+-- 1. TAB ENGINE SETTINGS (CẤU HÌNH DI CHUYỂN & CHỐNG KẸT)
+local EngineTab = Window:CreateTab("Engine & Tween Settings", 4483362458)
+EngineTab:CreateSlider({
+    Name = "Tốc độ Tween (Farm Tween Speed)",
+    Min = 100, Max = 500, CurrentValue = 300, Flag = "TweenSpeedSlider",
+    Callback = function(Value) _G.FarmTweenSpeed = Value end
+})
+EngineTab:CreateToggle({ Name = "Dừng Tween Khi Lỗi (Stop on Error)", CurrentValue = true, Callback = function(V) _G.StopTweenOnError = V end })
+EngineTab:CreateToggle({ Name = "Chống Lệch Tọa Độ (Anti Teleport Desync)", CurrentValue = true, Callback = function(V) print("Desync toggled") end })
+EngineTab:CreateToggle({ Name = "Ép Rời Ghế (Force Unsit)", CurrentValue = true, Callback = function(v) _G.AntiSit = v end })
+
+-- 2. TAB COMBAT ADVANCED (CẤU HÌNH CHIẾN ĐẤU & HITBOX)
+local AdvancedCombatTab = Window:CreateTab("Advanced Combat", 4483362458)
+AdvancedCombatTab:CreateSlider({
+    Name = "Tốc độ Click (Clicks Per Second)",
+    Min = 1, Max = 30, CurrentValue = 15, Flag = "CPSSlider",
+    Callback = function(Value) _G.ClicksPerSecond = Value end
+})
+AdvancedCombatTab:CreateToggle({
+    Name = "Mở Rộng Hitbox (Hitbox Extender)",
+    CurrentValue = false,
+    Callback = function(Value) _G.HitboxExtender = Value end
+})
+AdvancedCombatTab:CreateSlider({
+    Name = "Kích Thước Hitbox (Hitbox Size)",
+    Min = 10, Max = 50, CurrentValue = 20, Flag = "HitboxSizeSlider",
+    Callback = function(Value) _G.HitboxSize = Value end
+})
+
+-- 3. TAB AUTO STATS (TỰ TĂNG ĐIỂM SỐ)
+local StatsTab = Window:CreateTab("Auto Stats", 4483362458)
+StatsTab:CreateDropdown({
+    Name = "Ưu Tiên Cộng Điểm (Stat Priority)",
+    Options = {"Melee", "Defense", "Sword", "Blox Fruit"},
+    CurrentOption = "Melee",
+    Callback = function(Option) _G.StatPriority = Option[1] or Option end,
+})
+StatsTab:CreateToggle({
+    Name = "Tự Động Cộng Điểm Còn Lại (Spend Remaining)",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoSpendStats = Value end
+})
+
+-- 4. TAB VISUALS & MOVEMENT (HÌNH ẢNH & DI CHUYỂN NHÂN VẬT)
+local MoveVisualTab = Window:CreateTab("Movement & Visuals", 4483362458)
+MoveVisualTab:CreateSlider({
+    Name = "Tầm Nhìn Camera (Camera FOV)",
+    Min = 70, Max = 120, CurrentValue = 70, Flag = "FOVSlider",
+    Callback = function(v) game:GetService("Workspace").CurrentCamera.FieldOfView = v end
+})
+MoveVisualTab:CreateToggle({
+    Name = "Bật Gian Lận Tốc Độ (WalkSpeed Hack)",
+    CurrentValue = false,
+    Callback = function(state)
+        if state then game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100 else game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16 end
+    end
+})
+MoveVisualTab:CreateToggle({
+    Name = "Làm Sáng Toàn Bản Đồ (Full Bright)",
+    CurrentValue = false,
+    Callback = function(Value)
+        if Value then game:GetService("Lighting").Brightness = 4 else game:GetService("Lighting").Brightness = 2 end
+    end
+})
+
+-- 5. TAB SAFETY & PERFORMANCE (AN TOÀN & GIẢM LAG)
+local SafetyTab = Window:CreateTab("Safety & System", 4483362458)
+SafetyTab:CreateToggle({ Name = "Chống Rơi Xuống Vực (Anti Void)", CurrentValue = true, Callback = function(v) print("Anti void status") end })
+SafetyTab:CreateToggle({ Name = "Tự Động Kết Nối Lại Khi Bị Kick (Rejoin)", CurrentValue = true, Callback = function(v) _G.AutoRejoin = v end })
+SafetyTab:CreateToggle({
+    Name = "Chế Độ Tiết Kiệm FPS (FPS Saver / Giảm Lag)",
+    CurrentValue = false,
+    Callback = function(state)
+        if state then setfpscap(30) else setfpscap(60) end
+    end
+})
     Rayfield:LoadConfiguration()
 end
 
