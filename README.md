@@ -1,5 +1,5 @@
 -- =============================================================================
--- [PHẦN 1] HÀM MÀN HÌNH CHỜ HOHO V4
+-- [PHẦN 1] HÀM MÀN HÌNH CHỜ zenhub
 -- =============================================================================
 local function ChayManHinhCho(ThoiGianChay, HamKichHoatHub)
     local GameId = game.GameId
@@ -13,8 +13,40 @@ local function ChayManHinhCho(ThoiGianChay, HamKichHoatHub)
             Duration = 5
         })
         return 
-    end
+    end 
 
+local TweenService = game:GetService("TweenService")
+local function SafeTweenTo(targetCFrame, speed)
+    local Player = game:GetService("Players").LocalPlayer
+    if not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then return end
+    local root = Player.Character.HumanoidRootPart
+    local dist = (root.Position - targetCFrame.Position).Magnitude
+    local duration = dist / (speed or 300)
+    
+    if _G.SafeTween then
+        local tween = TweenService:Create(root, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame})
+        tween:Play()
+        tween.Completed:Wait()
+    else
+        root.CFrame = targetCFrame
+    end
+end
+
+task.spawn(function()
+    while true do
+        task.wait(0.5)
+        if _G.AutoFarmChests then
+            pcall(function()
+                for _, v in pairs(workspace:GetChildren()) do
+                    if v.Name:find("Chest") and v:IsA("Part") then
+                        SafeTweenTo(v.CFrame, 350)
+                        task.wait(0.2)
+                    end
+                end
+            end)
+        end
+    end
+end)
     local INFO_DOT25_QUAD = TweenInfo.new(.25, Enum.EasingStyle.Quad)
     local HOHO_Passcheck = Instance.new("ScreenGui")
     local INTRO = Instance.new("CanvasGroup")
@@ -205,7 +237,23 @@ local function KichHoatScriptCuaToi()
             end
         end
     end)
+   AutoFarmTab:CreateToggle({
+    Name = "Auto Farm Near (Mob Aura)",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoFarmNear = Value end
+})
 
+AutoFarmTab:CreateToggle({
+    Name = "Auto Farm Boss (All Worlds)",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoFarmBoss = Value end
+})
+
+AutoFarmTab:CreateToggle({
+    Name = "Auto Kill Greybeard & Boss Raid",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoKillGreybeard = Value end
+})
     -- 2. Tab Settings Mastery Section
     local MasteryTab = Window:CreateTab("Settings Mastery", 4483362458)
     MasteryTab:CreateToggle({
@@ -250,7 +298,23 @@ local function KichHoatScriptCuaToi()
         Name = "Auto Quest Lấy Cursed Dual Katana (CDK)",
         Callback = function() Rayfield:Notify({Title="CDK Quest", Text="Bắt đầu chạy chuỗi nhiệm vụ Tushita & Yama!", Duration=4}) end
     })
+ ItemsTab:CreateToggle({
+    Name = "Auto Saber / Pole / Saw / Trident Quest",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoSaberQuest = Value end
+})
 
+ItemsTab:CreateToggle({
+    Name = "Auto Warden & Chief Warden",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoWarden = Value end
+})
+
+ItemsTab:CreateToggle({
+    Name = "Auto Elite Hunter & Player Hunter",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoEliteHunter = Value end
+})
     -- 4. Tab Dungeon Support & Auto Raid
     local RaidTab = Window:CreateTab("Dungeon & Auto Raid", 4483362458)
     RaidTab:CreateToggle({
@@ -279,7 +343,23 @@ local function KichHoatScriptCuaToi()
             end
         end
     end)
+ RaidTab:CreateToggle({
+    Name = "Auto Clear Dungeon Enemies (Floor Detection)",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoClearDungeonEnemies = Value end
+})
 
+RaidTab:CreateToggle({
+    Name = "Auto Door & Exit Handling (Tự Qua Cửa)",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoDoorExitHandling = Value end
+})
+
+RaidTab:CreateToggle({
+    Name = "Auto Awaken Fruit (Tự Thức Tỉnh Chiêu)",
+    CurrentValue = false,
+    Callback = function(Value) _G.AutoAwakenFruit = Value end
+})
     -- 5. Tab Auto Dragon Quest Section
     local DragonTab = Window:CreateTab("Auto Dragon Quest", 4483362458)
     DragonTab:CreateToggle({
