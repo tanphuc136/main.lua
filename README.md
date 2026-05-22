@@ -1,5 +1,5 @@
 -- =============================================================================
--- [PHẦN 1] HÀM MÀN HÌNH CHỜ zenhub
+-- [PHẦN 1] HÀM MÀN HÌNH CHỜ ZENHUB
 -- =============================================================================
 local function ChayManHinhCho(ThoiGianChay, HamKichHoatHub)
     local GameId = game.GameId
@@ -15,71 +15,74 @@ local function ChayManHinhCho(ThoiGianChay, HamKichHoatHub)
         return 
     end 
 
-local TweenService = game:GetService("TweenService")
-local function SafeTweenTo(targetCFrame, speed)
-    local Player = game:GetService("Players").LocalPlayer
-    if not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then return end
-    local root = Player.Character.HumanoidRootPart
-    local dist = (root.Position - targetCFrame.Position).Magnitude
-    local duration = dist / (speed or 300)
-    
-    if _G.SafeTween then
-        local tween = TweenService:Create(root, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame})
-        tween:Play()
-        tween.Completed:Wait()
-    else
-        root.CFrame = targetCFrame
-    end
-end
-
-task.spawn(function()
-    while true do
-        task.wait(0.5)
-        if _G.AutoFarmChests then
-            pcall(function()
-                for _, v in pairs(workspace:GetChildren()) do
-                    if v.Name:find("Chest") and v:IsA("Part") then
-                        SafeTweenTo(v.CFrame, 350)
-                        task.wait(0.2)
-                    end
-                end
-            end)
+    -- Hệ thống Safe Tween di chuyển mượt mà
+    local function SafeTweenTo(targetCFrame, speed)
+        local Player = game:GetService("Players").LocalPlayer
+        if not Player.Character or not Player.Character:FindFirstChild("HumanoidRootPart") then return end
+        local root = Player.Character.HumanoidRootPart
+        local dist = (root.Position - targetCFrame.Position).Magnitude
+        local duration = dist / (speed or 300)
+        
+        if _G.SafeTween then
+            local tween = TweenService:Create(root, TweenInfo.new(duration, Enum.EasingStyle.Linear), {CFrame = targetCFrame})
+            tween:Play()
+            tween.Completed:Wait()
+        else
+            root.CFrame = targetCFrame
         end
     end
-end) 
--- =============================================================================
--- CẤU HÌNH HỆ THỐNG BIẾN TOÀN CỤC MỚI (CHỈ SỐ & CONFIG CHI TIẾT)
--- =============================================================================
-_G.AutoFarmMode = "Normal"
-_G.FarmDistance = 10
-_G.FarmHeightOffset = 10
-_G.FarmTweenSpeed = 300
-_G.StopTweenOnError = true
-_G.StopTweenOnDeath = true
-_G.AttackDelay = 0.1
-_G.FastAttack = true
-_G.FastAttackMultiplier = 2
-_G.BringRadius = 50
-_G.FaceTarget = true
-_G.LockPosition = true
-_G.QuestMode = "Level Detection"
-_G.QuestTeleportDelay = 0.5
-_G.MaxDesyncDistance = 150
-_G.EntranceDelay = 1
-_G.ClicksPerSecond = 15
-_G.HitboxExtender = false
-_G.HitboxSize = 20
-_G.HitboxShape = "Block"
-_G.BossSelection = "All"
-_G.BossFarmDistance = 12
-_G.DungeonType = "Flame"
-_G.StatPriority = "Melee"
-_G.FlySpeed = 50
-_G.WalkSpeed = 16
-_G.JumpPower = 50
-_G.CameraFOV = 70
-_G.Brightness = 2
-_G.RejoinDelay = 5
+
+    -- Vòng lặp tự động nhặt rương
+    task.spawn(function()
+        while true do
+            task.wait(0.5)
+            if _G.AutoFarmChests then
+                pcall(function()
+                    for _, v in pairs(workspace:GetChildren()) do
+                        if v.Name:find("Chest") and v:IsA("Part") then
+                            SafeTweenTo(v.CFrame, 350)
+                            task.wait(0.2)
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    -- =============================================================================
+    -- CẤU HÌNH HỆ THỐNG BIẾN TOÀN CỤC MỚI (CHỈ SỐ & CONFIG CHI TIẾT)
+    -- =============================================================================
+    _G.AutoFarmMode = "Normal"
+    _G.FarmDistance = 10
+    _G.FarmHeightOffset = 10
+    _G.FarmTweenSpeed = 300
+    _G.StopTweenOnError = true
+    _G.StopTweenOnDeath = true
+    _G.AttackDelay = 0.1
+    _G.FastAttack = true
+    _G.FastAttackMultiplier = 2
+    _G.BringRadius = 50
+    _G.FaceTarget = true
+    _G.LockPosition = true
+    _G.QuestMode = "Level Detection"
+    _G.QuestTeleportDelay = 0.5
+    _G.MaxDesyncDistance = 150
+    _G.EntranceDelay = 1
+    _G.ClicksPerSecond = 15
+    _G.HitboxExtender = false
+    _G.HitboxSize = 20
+    _G.HitboxShape = "Block"
+    _G.BossSelection = "All"
+    _G.BossFarmDistance = 12
+    _G.DungeonType = "Flame"
+    _G.StatPriority = "Melee"
+    _G.FlySpeed = 50
+    _G.WalkSpeed = 16
+    _G.JumpPower = 50
+    _G.CameraFOV = 70
+    _G.Brightness = 2
+    _G.RejoinDelay = 5
+
     local INFO_DOT25_QUAD = TweenInfo.new(.25, Enum.EasingStyle.Quad)
     local HOHO_Passcheck = Instance.new("ScreenGui")
     local INTRO = Instance.new("CanvasGroup")
@@ -90,6 +93,7 @@ _G.RejoinDelay = 5
     local Content = Instance.new("Frame")
 
     HOHO_Passcheck.Name = "Hoho_Intro_Interface"
+    HOHheck = HOHO_Passcheck
     HOHO_Passcheck.IgnoreGuiInset = true
     HOHO_Passcheck.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     repeat task.wait() until pcall(function() HOHO_Passcheck.Parent = CoreGui end)
@@ -146,12 +150,15 @@ end
 -- =============================================================================
 local function KichHoatScriptCuaToi()
     local Rayfield = loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareDesign/Rayfield/main/source'))()
-
+    
     local Window = Rayfield:CreateWindow({
         Name = "Universal Mega Hub v5",
         LoadingTitle = "Loading Dynamic Script Systems...",
         LoadingSubtitle = "by idontthinkthismatters & Custom",
         ConfigurationSaving = { Enabled = true, FolderName = "MegaHubConfig", FileName = "config" },
+        Discord = { Enabled = false, Invite = "", RememberJoins = true },
+        KeySystem = false
+    })
 
     -- Các biến toàn cục quản lý trạng thái
     _G.AutoFarm = false
@@ -191,12 +198,10 @@ local function KichHoatScriptCuaToi()
         local hum = char and char:FindFirstChild("Humanoid")
         if not char or not hum then return end
         
-        -- Nếu đã cầm sẵn vũ khí tương ứng thì bỏ qua
         for _, tool in pairs(char:GetChildren()) do
             if tool:IsA("Tool") and tool.ToolTip == weaponType then return end
         end
         
-        -- Nếu chưa cầm, tìm trong balo để lôi ra
         for _, tool in pairs(LP.Backpack:GetChildren()) do
             if tool:IsA("Tool") and (tool.ToolTip == weaponType or (weaponType == "Blox Fruit" and tool.Name:find("Fruit"))) then
                 hum:EquipTool(tool)
@@ -217,7 +222,7 @@ local function KichHoatScriptCuaToi()
     -- Click chuột siêu tốc để đánh quái/người chơi
     task.spawn(function()
         while true do
-            task.wait(0.01)
+            task.wait(1 / _G.ClicksPerSecond)
             if _G.AutoFarm or _G.AutoBounty or _G.AutoSeaEvent or _G.AutoDungeon then
                 pcall(function()
                     VIM:SendMouseButtonEvent(0, 0, 0, true, game, 0)
@@ -250,6 +255,7 @@ local function KichHoatScriptCuaToi()
         CurrentValue = false,
         Callback = function(Value) _G.AutoFarm = Value end
     })
+
     task.spawn(function()
         while true do
             task.wait(0.1)
@@ -258,7 +264,7 @@ local function KichHoatScriptCuaToi()
                     EquipWeapon(_G.SelectWeapon)
                     for _, m in pairs(workspace.Enemies:GetChildren()) do
                         if m.Name == _G.AutoFarm_MonsterName and m:FindFirstChild("HumanoidRootPart") and m.Humanoid.Health > 0 then
-                            LP.Character.HumanoidRootPart.CFrame = m.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
+                            LP.Character.HumanoidRootPart.CFrame = m.HumanoidRootPart.CFrame * CFrame.new(0, _G.FarmHeightOffset, 0)
                             BringMonsters(_G.AutoFarm_MonsterName, m.HumanoidRootPart.CFrame)
                             break
                         end
@@ -267,35 +273,16 @@ local function KichHoatScriptCuaToi()
             end
         end
     end)
-   AutoFarmTab:CreateToggle({
-    Name = "Auto Farm Near (Mob Aura)",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoFarmNear = Value end
-})
 
-AutoFarmTab:CreateToggle({
-    Name = "Auto Farm Boss (All Worlds)",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoFarmBoss = Value end
-})
+    AutoFarmTab:CreateToggle({ Name = "Auto Farm Near (Mob Aura)", CurrentValue = false, Callback = function(Value) _G.AutoFarmNear = Value end })
+    AutoFarmTab:CreateToggle({ Name = "Auto Farm Boss (All Worlds)", CurrentValue = false, Callback = function(Value) _G.AutoFarmBoss = Value end })
+    AutoFarmTab:CreateToggle({ Name = "Auto Kill Greybeard & Boss Raid", CurrentValue = false, Callback = function(Value) _G.AutoKillGreybeard = Value end })
 
-AutoFarmTab:CreateToggle({
-    Name = "Auto Kill Greybeard & Boss Raid",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoKillGreybeard = Value end
-})
     -- 2. Tab Settings Mastery Section
     local MasteryTab = Window:CreateTab("Settings Mastery", 4483362458)
-    MasteryTab:CreateToggle({
-        Name = "Auto Cày Mastery Trái Ác Quỷ (Quái Thấp Máu Xả Chiêu)",
-        CurrentValue = false,
-        Callback = function(Value) _G.AutoMasteryBloxFruit = Value end
-    })
-    MasteryTab:CreateToggle({
-        Name = "Auto Cày Mastery Súng",
-        CurrentValue = false,
-        Callback = function(Value) _G.AutoMasteryGun = Value end
-    })
+    MasteryTab:CreateToggle({ Name = "Auto Cày Mastery Trái Ác Quỷ (Quái Thấp Máu Xả Chiêu)", CurrentValue = false, Callback = function(Value) _G.AutoMasteryBloxFruit = Value end })
+    MasteryTab:CreateToggle({ Name = "Auto Cày Mastery Súng", CurrentValue = false, Callback = function(Value) _G.AutoMasteryGun = Value end })
+
     task.spawn(function()
         while true do
             task.wait(0.5)
@@ -328,41 +315,20 @@ AutoFarmTab:CreateToggle({
         Name = "Auto Quest Lấy Cursed Dual Katana (CDK)",
         Callback = function() Rayfield:Notify({Title="CDK Quest", Text="Bắt đầu chạy chuỗi nhiệm vụ Tushita & Yama!", Duration=4}) end
     })
- ItemsTab:CreateToggle({
-    Name = "Auto Saber / Pole / Saw / Trident Quest",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoSaberQuest = Value end
-})
+    ItemsTab:CreateToggle({ Name = "Auto Saber / Pole / Saw / Trident Quest", CurrentValue = false, Callback = function(Value) _G.AutoSaberQuest = Value end })
+    ItemsTab:CreateToggle({ Name = "Auto Warden & Chief Warden", CurrentValue = false, Callback = function(Value) _G.AutoWarden = Value end })
+    ItemsTab:CreateToggle({ Name = "Auto Elite Hunter & Player Hunter", CurrentValue = false, Callback = function(Value) _G.AutoEliteHunter = Value end })
 
-ItemsTab:CreateToggle({
-    Name = "Auto Warden & Chief Warden",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoWarden = Value end
-})
-
-ItemsTab:CreateToggle({
-    Name = "Auto Elite Hunter & Player Hunter",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoEliteHunter = Value end
-})
     -- 4. Tab Dungeon Support & Auto Raid
     local RaidTab = Window:CreateTab("Dungeon & Auto Raid", 4483362458)
-    RaidTab:CreateToggle({
-        Name = "Tự Động Mua Chip & Bắt Đầu Raid",
-        CurrentValue = false,
-        Callback = function(Value) _G.AutoDungeon = Value end
-    })
-    RaidTab:CreateToggle({
-        Name = "Auto Sang Đảo Raid Tiếp Theo (Next Island)",
-        CurrentValue = false,
-        Callback = function(Value) _G.AutoNextIslandRaid = Value end
-    })
+    RaidTab:CreateToggle({ Name = "Tự Động Mua Chip & Bắt Đầu Raid", CurrentValue = false, Callback = function(Value) _G.AutoDungeon = Value end })
+    RaidTab:CreateToggle({ Name = "Auto Sang Đảo Raid Tiếp Theo (Next Island)", CurrentValue = false, Callback = function(Value) _G.AutoNextIslandRaid = Value end })
+
     task.spawn(function()
         while true do
             task.wait(0.5)
             if _G.AutoDungeon then
                 pcall(function()
-                    -- Cơ chế dịch chuyển hạ gục quái vật trong sảnh Raid ẩn danh
                     for _, m in pairs(workspace.Enemies:GetChildren()) do
                         if m:FindFirstChild("HumanoidRootPart") and m.Humanoid.Health > 0 then
                             EquipWeapon(_G.SelectWeapon)
@@ -373,30 +339,14 @@ ItemsTab:CreateToggle({
             end
         end
     end)
- RaidTab:CreateToggle({
-    Name = "Auto Clear Dungeon Enemies (Floor Detection)",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoClearDungeonEnemies = Value end
-})
 
-RaidTab:CreateToggle({
-    Name = "Auto Door & Exit Handling (Tự Qua Cửa)",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoDoorExitHandling = Value end
-})
+    RaidTab:CreateToggle({ Name = "Auto Clear Dungeon Enemies (Floor Detection)", CurrentValue = false, Callback = function(Value) _G.AutoClearDungeonEnemies = Value end })
+    RaidTab:CreateToggle({ Name = "Auto Door & Exit Handling (Tự Qua Cửa)", CurrentValue = false, Callback = function(Value) _G.AutoDoorExitHandling = Value end })
+    RaidTab:CreateToggle({ Name = "Auto Awaken Fruit (Tự Thức Tỉnh Chiêu)", CurrentValue = false, Callback = function(Value) _G.AutoAwakenFruit = Value end })
 
-RaidTab:CreateToggle({
-    Name = "Auto Awaken Fruit (Tự Thức Tỉnh Chiêu)",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoAwakenFruit = Value end
-})
     -- 5. Tab Auto Dragon Quest Section
     local DragonTab = Window:CreateTab("Auto Dragon Quest", 4483362458)
-    DragonTab:CreateToggle({
-        Name = "Kích Hoạt Chuỗi Thử Thách Rồng (Dragon V2)",
-        CurrentValue = false,
-        Callback = function(Value) _G.AutoDragonQuest = Value end
-    })
+    DragonTab:CreateToggle({ Name = "Kích Hoạt Chuỗi Thử Thách Rồng (Dragon V2)", CurrentValue = false, Callback = function(Value) _G.AutoDragonQuest = Value end })
 
     -- 6. Tab Auto Prehistoric Island Section
     local PrehistoricTab = Window:CreateTab("Prehistoric Island", 4483362458)
@@ -430,7 +380,7 @@ RaidTab:CreateToggle({
         Callback = function() print("Đang kích hoạt quy trình Trial...") end
     })
 
-    -- 9. Tab Visuals Section (Bao gồm hệ thống ESP cũ)
+    -- 9. Tab Visuals Section (ESP)
     local VisualsTab = Window:CreateTab("Visuals Section", 4483362458)
     local function CreateESP(targetModel, color)
         if not targetModel:FindFirstChild("CustomESP") then
@@ -490,7 +440,7 @@ RaidTab:CreateToggle({
         Callback = function() game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("TravelZou") end
     })
 
-    -- 12. Tab Lazada Shop Section (Nơi mua các kĩ năng ẩn danh nhanh)
+    -- 12. Tab Lazada Shop Section
     local LazadaTab = Window:CreateTab("Lazada Shop Section", 4483362458)
     LazadaTab:CreateButton({
         Name = "Mua Bước Nhảy Không Không (Geppo) - $25,000",
@@ -501,7 +451,7 @@ RaidTab:CreateToggle({
         Callback = function() game:GetService("ReplicatedStorage").Remotes.CommF_:InvokeServer("BuyHaki", "Buso") end
     })
 
-    -- 13. Tab Combat & Auto Bounty (Hệ thống săn Bounty tinh chỉnh cũ)
+    -- 13. Tab Combat & Auto Bounty
     local CombatTab = Window:CreateTab("Combat Section", 4483362458)
     CombatTab:CreateToggle({
         Name = "Kích Hoạt Auto Bounty (Thông Minh)",
@@ -509,169 +459,5 @@ RaidTab:CreateToggle({
         Callback = function(Value) _G.AutoBounty = Value end
     })
     CombatTab:CreateSlider({ Name = "Máu rút lui an toàn %", Min = 10, Max = 50, CurrentValue = 35, Callback = function(V) _G.SafeHealth = V end })
-    
-    local function IsValidBounty(p)
-        if p == LP or not p.Character or not p.Character:FindFirstChild("HumanoidRootPart") then return false end
-        if _G.ExcludeFriends and LP:IsFriendsWith(p.UserId) then return false end
-        if p.Character.Humanoid.Health > 0 and not p.Character:FindFirstChildOfClass("ForceField") then return true end
-        return false
-    end
-    task.spawn(function()
-        while true do
-            task.wait(0.2)
-            if _G.AutoBounty then
-                pcall(function()
-                    local MyHum = LP.Character.Humanoid
-                    if (MyHum.Health / MyHum.MaxHealth) * 100 <= _G.SafeHealth then
-                        LP.Character.HumanoidRootPart.CFrame = LP.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1500, 0)
-                        return
-                    end
-                    for _, p in pairs(Players:GetPlayers()) do
-                        if IsValidBounty(p) then
-                            while IsValidBounty(p) and _G.AutoBounty do
-                                task.wait()
-                                LP.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 11, 2)
-                            end
-                        end
-                    end
-                end)
-            end
-        end
-    end)
 
-    -- 14. Tab Key Scripts (Giữ nguyên danh sách 21 scripts cũ của bạn)
-    local KeyScriptsTab = Window:CreateTab("Key Scripts", 4483362458)
-    local scripts = {
-        {Name = "Load Fly GUI", URL = "https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"},
-        {Name = "Infinite Yield", URL = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"},
-        {Name = "CMD-X", URL = "https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"},
-        {Name = "OctoSpy", URL = "https://raw.githubusercontent.com/InfernusScripts/Octo-Spy/refs/heads/main/Main.lua"},
-        {Name = "Trashcan Moveset", URL = "https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man"},
-        {Name = "ScriptHub V3", URL = "https://rawscripts.net/raw/Universal-Script-ScriptHub-V3-Best-Mobile-ScriptHub-Keyless-16115"},
-        {Name = "QuirkyCMD 2", URL = "https://rawscripts.net/raw/Universal-Script-QuirkyCMD-2-28532"},
-        {Name = "Invisible Script", URL = "https://rawscripts.net/raw/Universal-Script-Invisible-script-20557"},
-        {Name = "Badge Hub (Slap Battles)", URL = "https://raw.githubusercontent.com/IncognitoScripts/SlapBattles/refs/heads/main/BadgeHub"},
-        {Name = "Elemental Powers Tycoon", URL = "https://scriptblox.com/raw/Elemental-Powers-Tycoon-OuxiHub-equip-any-power-11360"},
-        {Name = "Orbit GUI", URL = "https://raw.githubusercontent.com/long191910/all-my-roblox-script/refs/heads/main/orbit.lua"},
-        {Name = "Electro GUI", URL = "https://paste.ee/r/yHoJNbhj"},
-        {Name = "Hitbox", URL = "https://pastefy.app/ItfO0tdg/raw"},
-        {Name = "Gui maker", URL = "https://pastefy.app/EOgPqinS/raw"},
-        {Name = "The darkones Brookhaven", URL = "https://raw.githubusercontent.com/TheDarkoneMarcillisePex/Other-Scripts/main/Brook%20Haven%20Gui"},
-        {Name = "Model Inserter", URL = "https://raw.githubusercontent.com/Allvideo1/My-script-/refs/heads/main/Model%20Inserter.lua"},
-        {Name = "Touch Fling", URL = "https://raw.githubusercontent.com/miso517/scirpt/refs/heads/main/main.lua"},
-        {Name = "Bring Parts", URL = "https://pastebin.com/raw/TihMhyyh"},
-        {Name = "Ghost Hub Admin", URL = "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"},
-        {Name = "Super Ring Part v6", URL = "https://raw.githubusercontent.com/chesslovers69/Super-ring-parts-v6/refs/heads/main/Bylukaslol"},
-        {Name = "Studio Lite Hub", URL = "https://raw.githubusercontent.com/Allvideo1/My-script-/refs/heads/main/StudioHub"}
-    }
-    for _, script in pairs(scripts) do
-        KeyScriptsTab:CreateButton({
-            Name = script.Name,
-            Callback = function() pcall(function() loadstring(game:HttpGet(script.URL))() end) end
-        })
-    end
-
-    -- 15. Tab Misc & Credits Section
-    local MiscTab = Window:CreateTab("Misc Section", 4483362458)
-    MiscTab:CreateToggle({
-        Name = "Anti-Sit (Chống Ghế Ngồi Khi Farm)",
-        CurrentValue = false,
-        Callback = function(state)
-            _G.AntiSit = state
-            while _G.AntiSit do
-                task.wait(0.1)
-                if LP.Character and LP.Character:FindFirstChildOfClass("Humanoid") then
-                    if LP.Character:FindFirstChildOfClass("Humanoid").Sit then LP.Character:FindFirstChildOfClass("Humanoid").Sit = false end
-                end
-            end
-        end
-    })
-    MiscTab:CreateLabel("Nhà Phát Triển: zenscript")
--- =============================================================================
--- CÁC TAB CẤU HÌNH CHI TIẾT CHUYÊN SÂU
--- =============================================================================
-
--- 1. TAB ENGINE SETTINGS (CẤU HÌNH DI CHUYỂN & CHỐNG KẸT)
-local EngineTab = Window:CreateTab("Engine & Tween Settings", 4483362458)
-EngineTab:CreateSlider({
-    Name = "Tốc độ Tween (Farm Tween Speed)",
-    Min = 100, Max = 500, CurrentValue = 300, Flag = "TweenSpeedSlider",
-    Callback = function(Value) _G.FarmTweenSpeed = Value end
-})
-EngineTab:CreateToggle({ Name = "Dừng Tween Khi Lỗi (Stop on Error)", CurrentValue = true, Callback = function(V) _G.StopTweenOnError = V end })
-EngineTab:CreateToggle({ Name = "Chống Lệch Tọa Độ (Anti Teleport Desync)", CurrentValue = true, Callback = function(V) print("Desync toggled") end })
-EngineTab:CreateToggle({ Name = "Ép Rời Ghế (Force Unsit)", CurrentValue = true, Callback = function(v) _G.AntiSit = v end })
-
--- 2. TAB COMBAT ADVANCED (CẤU HÌNH CHIẾN ĐẤU & HITBOX)
-local AdvancedCombatTab = Window:CreateTab("Advanced Combat", 4483362458)
-AdvancedCombatTab:CreateSlider({
-    Name = "Tốc độ Click (Clicks Per Second)",
-    Min = 1, Max = 30, CurrentValue = 15, Flag = "CPSSlider",
-    Callback = function(Value) _G.ClicksPerSecond = Value end
-})
-AdvancedCombatTab:CreateToggle({
-    Name = "Mở Rộng Hitbox (Hitbox Extender)",
-    CurrentValue = false,
-    Callback = function(Value) _G.HitboxExtender = Value end
-})
-AdvancedCombatTab:CreateSlider({
-    Name = "Kích Thước Hitbox (Hitbox Size)",
-    Min = 10, Max = 50, CurrentValue = 20, Flag = "HitboxSizeSlider",
-    Callback = function(Value) _G.HitboxSize = Value end
-})
-
--- 3. TAB AUTO STATS (TỰ TĂNG ĐIỂM SỐ)
-local StatsTab = Window:CreateTab("Auto Stats", 4483362458)
-StatsTab:CreateDropdown({
-    Name = "Ưu Tiên Cộng Điểm (Stat Priority)",
-    Options = {"Melee", "Defense", "Sword", "Blox Fruit"},
-    CurrentOption = "Melee",
-    Callback = function(Option) _G.StatPriority = Option[1] or Option end,
-})
-StatsTab:CreateToggle({
-    Name = "Tự Động Cộng Điểm Còn Lại (Spend Remaining)",
-    CurrentValue = false,
-    Callback = function(Value) _G.AutoSpendStats = Value end
-})
-
--- 4. TAB VISUALS & MOVEMENT (HÌNH ẢNH & DI CHUYỂN NHÂN VẬT)
-local MoveVisualTab = Window:CreateTab("Movement & Visuals", 4483362458)
-MoveVisualTab:CreateSlider({
-    Name = "Tầm Nhìn Camera (Camera FOV)",
-    Min = 70, Max = 120, CurrentValue = 70, Flag = "FOVSlider",
-    Callback = function(v) game:GetService("Workspace").CurrentCamera.FieldOfView = v end
-})
-MoveVisualTab:CreateToggle({
-    Name = "Bật Gian Lận Tốc Độ (WalkSpeed Hack)",
-    CurrentValue = false,
-    Callback = function(state)
-        if state then game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100 else game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16 end
-    end
-})
-MoveVisualTab:CreateToggle({
-    Name = "Làm Sáng Toàn Bản Đồ (Full Bright)",
-    CurrentValue = false,
-    Callback = function(Value)
-        if Value then game:GetService("Lighting").Brightness = 4 else game:GetService("Lighting").Brightness = 2 end
-    end
-})
-
--- 5. TAB SAFETY & PERFORMANCE (AN TOÀN & GIẢM LAG)
-local SafetyTab = Window:CreateTab("Safety & System", 4483362458)
-SafetyTab:CreateToggle({ Name = "Chống Rơi Xuống Vực (Anti Void)", CurrentValue = true, Callback = function(v) print("Anti void status") end })
-SafetyTab:CreateToggle({ Name = "Tự Động Kết Nối Lại Khi Bị Kick (Rejoin)", CurrentValue = true, Callback = function(v) _G.AutoRejoin = v end })
-SafetyTab:CreateToggle({
-    Name = "Chế Độ Tiết Kiệm FPS (FPS Saver / Giảm Lag)",
-    CurrentValue = false,
-    Callback = function(state)
-        if state then setfpscap(30) else setfpscap(60) end
-    end
-})
-    Rayfield:LoadConfiguration()
-end
-
--- =============================================================================
--- [PHẦN 3] KHỞI CHẠY THỰC THI SCRIPT
--- =============================================================================
-repeat task.wait() until game:IsLoaded()
-ChayManHinhCho(1.5, KichHoatScriptCuaToi)
+    local function
