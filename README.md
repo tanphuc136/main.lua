@@ -460,4 +460,126 @@ local function KichHoatScriptCuaToi()
     })
     CombatTab:CreateSlider({ Name = "Máu rút lui an toàn %", Min = 10, Max = 50, CurrentValue = 35, Callback = function(V) _G.SafeHealth = V end })
 
-    local function
+    local function IsValidBounty(p)
+        if p == LP or not p.Character or not p.Character:FindFirstChild("HumanoidRootPart") then return false end
+        if _G.ExcludeFriends and LP:IsFriendsWith(p.UserId) then return false end
+        if p.Character.Humanoid.Health > 0 and not p.Character:FindFirstChildOfClass("ForceField") then return true end
+        return false
+    end
+
+    task.spawn(function()
+        while true do
+            task.wait(0.2)
+            if _G.AutoBounty then
+                pcall(function()
+                    local MyHum = LP.Character.Humanoid
+                    if (MyHum.Health / MyHum.MaxHealth) * 100 <= _G.SafeHealth then
+                        LP.Character.HumanoidRootPart.CFrame = LP.Character.HumanoidRootPart.CFrame * CFrame.new(0, 1500, 0)
+                        return
+                    end
+                    for _, p in pairs(Players:GetPlayers()) do
+                        if IsValidBounty(p) then
+                            while IsValidBounty(p) and _G.AutoBounty do
+                                task.wait()
+                                LP.Character.HumanoidRootPart.CFrame = p.Character.HumanoidRootPart.CFrame * CFrame.new(0, 11, 2)
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end)
+
+    -- 14. Tab Key Scripts (21 Scripts phụ)
+    local KeyScriptsTab = Window:CreateTab("Key Scripts", 4483362458)
+    local scripts = {
+        {Name = "Load Fly GUI", URL = "https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"},
+        {Name = "Infinite Yield", URL = "https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"},
+        {Name = "CMD-X", URL = "https://raw.githubusercontent.com/CMD-X/CMD-X/master/Source"},
+        {Name = "OctoSpy", URL = "https://raw.githubusercontent.com/InfernusScripts/Octo-Spy/refs/heads/main/Main.lua"},
+        {Name = "Trashcan Moveset", URL = "https://raw.githubusercontent.com/yes1nt/yes/refs/heads/main/Trashcan%20Man"},
+        {Name = "ScriptHub V3", URL = "https://rawscripts.net/raw/Universal-Script-ScriptHub-V3-Best-Mobile-ScriptHub-Keyless-16115"},
+        {Name = "QuirkyCMD 2", URL = "https://rawscripts.net/raw/Universal-Script-QuirkyCMD-2-28532"},
+        {Name = "Invisible Script", URL = "https://rawscripts.net/raw/Universal-Script-Invisible-script-20557"},
+        {Name = "Badge Hub (Slap Battles)", URL = "https://raw.githubusercontent.com/IncognitoScripts/SlapBattles/refs/heads/main/BadgeHub"},
+        {Name = "Elemental Powers Tycoon", URL = "https://scriptblox.com/raw/Elemental-Powers-Tycoon-OuxiHub-equip-any-power-11360"},
+        {Name = "Orbit GUI", URL = "https://raw.githubusercontent.com/long191910/all-my-roblox-script/refs/heads/main/orbit.lua"},
+        {Name = "Electro GUI", URL = "https://paste.ee/r/yHoJNbhj"},
+        {Name = "Hitbox", URL = "https://pastefy.app/ItfO0tdg/raw"},
+        {Name = "Gui maker", URL = "https://pastefy.app/EOgPqinS/raw"},
+        {Name = "The darkones Brookhaven", URL = "https://raw.githubusercontent.com/TheDarkoneMarcillisePex/Other-Scripts/main/Brook%20Haven%20Gui"},
+        {Name = "Model Inserter", URL = "https://raw.githubusercontent.com/Allvideo1/My-script-/refs/heads/main/Model%20Inserter.lua"},
+        {Name = "Touch Fling", URL = "https://raw.githubusercontent.com/miso517/scirpt/refs/heads/main/main.lua"},
+        {Name = "Bring Parts", URL = "https://pastebin.com/raw/TihMhyyh"},
+        {Name = "Ghost Hub Admin", URL = "https://raw.githubusercontent.com/GhostPlayer352/Test4/main/GhostHub"},
+        {Name = "Super Ring Part v6", URL = "https://raw.githubusercontent.com/chesslovers69/Super-ring-parts-v6/refs/heads/main/Bylukaslol"},
+        {Name = "Studio Lite Hub", URL = "https://raw.githubusercontent.com/Allvideo1/My-script-/refs/heads/main/StudioHub"}
+    }
+    for _, script in pairs(scripts) do
+        KeyScriptsTab:CreateButton({
+            Name = script.Name,
+            Callback = function() pcall(function() loadstring(game:HttpGet(script.URL))() end) end
+        })
+    end
+
+    -- 15. Tab Misc & Credits Section
+    local MiscTab = Window:CreateTab("Misc Section", 4483362458)
+    MiscTab:CreateToggle({
+        Name = "Anti-Sit (Chống Ghế Ngồi Khi Farm)",
+        CurrentValue = false,
+        Callback = function(state)
+            _G.AntiSit = state
+            if state then
+                task.spawn(function()
+                    while _G.AntiSit do
+                        task.wait(0.1)
+                        if LP.Character and LP.Character:FindFirstChildOfClass("Humanoid") then
+                            if LP.Character:FindFirstChildOfClass("Humanoid").Sit then 
+                                LP.Character:FindFirstChildOfClass("Humanoid").Sit = false 
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    })
+    MiscTab:CreateLabel("Nhà Phát Triển: zenscript")
+
+    -- 16. TAB ENGINE SETTINGS (NÂNG CAO)
+    local EngineTab = Window:CreateTab("Engine & Tween Settings", 4483362458)
+    EngineTab:CreateSlider({ Name = "Tốc độ Tween (Farm Tween Speed)", Min = 100, Max = 500, CurrentValue = 300, Flag = "TweenSpeedSlider", Callback = function(Value) _G.FarmTweenSpeed = Value end })
+    EngineTab:CreateToggle({ Name = "Dừng Tween Khi Lỗi (Stop on Error)", CurrentValue = true, Callback = function(V) _G.StopTweenOnError = V end })
+    EngineTab:CreateToggle({ Name = "Chống Lệch Tọa Độ (Anti Teleport Desync)", CurrentValue = true, Callback = function(V) print("Desync toggled") end })
+    EngineTab:CreateToggle({ Name = "Ép Rời Ghế (Force Unsit)", CurrentValue = true, Callback = function(v) _G.AntiSit = v end })
+
+    -- 17. TAB COMBAT ADVANCED (HITBOX)
+    local AdvancedCombatTab = Window:CreateTab("Advanced Combat", 4483362458)
+    AdvancedCombatTab:CreateSlider({ Name = "Tốc độ Click (Clicks Per Second)", Min = 1, Max = 30, CurrentValue = 15, Flag = "CPSSlider", Callback = function(Value) _G.ClicksPerSecond = Value end })
+    AdvancedCombatTab:CreateToggle({ Name = "Mở Rộng Hitbox (Hitbox Extender)", CurrentValue = false, Callback = function(Value) _G.HitboxExtender = Value end })
+    AdvancedCombatTab:CreateSlider({ Name = "Kích Thước Hitbox (Hitbox Size)", Min = 10, Max = 50, CurrentValue = 20, Flag = "HitboxSizeSlider", Callback = function(Value) _G.HitboxSize = Value end })
+
+    -- 18. TAB AUTO STATS
+    local StatsTab = Window:CreateTab("Auto Stats", 4483362458)
+    StatsTab:CreateDropdown({ Name = "Ưu Tiên Cộng Điểm (Stat Priority)", Options = {"Melee", "Defense", "Sword", "Blox Fruit"}, CurrentOption = "Melee", Callback = function(Option) _G.StatPriority = Option[1] or Option end, })
+    StatsTab:CreateToggle({ Name = "Tự Động Cộng Điểm Còn Lại (Spend Remaining)", CurrentValue = false, Callback = function(Value) _G.AutoSpendStats = Value end })
+
+    -- 19. TAB VISUALS & MOVEMENT
+    local MoveVisualTab = Window:CreateTab("Movement & Visuals", 4483362458)
+    MoveVisualTab:CreateSlider({ Name = "Tầm Nhìn Camera (Camera FOV)", Min = 70, Max = 120, CurrentValue = 70, Flag = "FOVSlider", Callback = function(v) game:GetService("Workspace").CurrentCamera.FieldOfView = v end })
+    MoveVisualTab:CreateToggle({ Name = "Bật Gian Lận Tốc Độ (WalkSpeed Hack)", CurrentValue = false, Callback = function(state) if state then game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 100 else game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16 end end })
+    MoveVisualTab:CreateToggle({ Name = "Làm Sáng Toàn Bản Đồ (Full Bright)", CurrentValue = false, Callback = function(Value) if Value then game:GetService("Lighting").Brightness = 4 else game:GetService("Lighting").Brightness = 2 end end })
+
+    -- 20. TAB SAFETY & PERFORMANCE
+    local SafetyTab = Window:CreateTab("Safety & System", 4483362458)
+    SafetyTab:CreateToggle({ Name = "Chống Rơi Xuống Vực (Anti Void)", CurrentValue = true, Callback = function(v) print("Anti void status") end })
+    SafetyTab:CreateToggle({ Name = "Tự Động Kết Nối Lại Khi Bị Kick (Rejoin)", CurrentValue = true, Callback = function(v) _G.AutoRejoin = v end })
+    SafetyTab:CreateToggle({ Name = "Chế Độ Tiết Kiệm FPS (FPS Saver / Giảm Lag)", CurrentValue = false, Callback = function(state) if state then setfpscap(30) else setfpscap(60) end end })
+
+    Rayfield:LoadConfiguration()
+end
+
+-- =============================================================================
+-- [PHẦN 3] KHỞI CHẠY THỰC THI SCRIPT
+-- =============================================================================
+repeat task.wait() until game:IsLoaded()
+ChayManHinhCho(1.5, KichHoatScriptCuaToi)
